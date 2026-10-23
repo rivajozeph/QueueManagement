@@ -1,0 +1,209 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#122342">
+  <meta name="description" content="QURE Hospital Queue Management System">
+  <title>QURE | Hospital Queue Management System</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <div class="brand-mark">Q</div>
+      <div>
+        <h1>QURE</h1>
+        <p>HOSPITAL QUEUE MANAGEMENT SYSTEM</p>
+      </div>
+    </div>
+    <div class="header-tag">
+      <span class="online-dot"></span>
+      Queue Dashboard
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="welcome">
+      <div>
+        <p class="eyebrow">HOSPITAL ADMINISTRATION</p>
+        <h2>Queue Management Dashboard</h2>
+        <p class="subtitle">Organizing Queues, Prioritizing Care</p>
+      </div>
+      <div class="date-card">
+        <span class="date-icon">▦</span>
+        <span id="todayDate">Today's Overview</span>
+      </div>
+    </section>
+
+    <section class="stats-grid" aria-label="Queue statistics">
+      <article class="stat-card stat-blue">
+        <div class="stat-top">
+          <span class="stat-label">TOTAL PATIENTS</span>
+          <span class="stat-icon">♙</span>
+        </div>
+        <p class="stat-number" id="totalCount">0</p>
+        <p class="stat-note">All registered patients</p>
+      </article>
+
+      <article class="stat-card stat-red">
+        <div class="stat-top">
+          <span class="stat-label">WAITING PATIENTS</span>
+          <span class="stat-icon">◷</span>
+        </div>
+        <p class="stat-number" id="waitingCount">0</p>
+        <p class="stat-note">Patients awaiting their turn</p>
+      </article>
+
+      <article class="stat-card stat-green">
+        <div class="stat-top">
+          <span class="stat-label">SERVED PATIENTS</span>
+          <span class="stat-icon">✓</span>
+        </div>
+        <p class="stat-number" id="servedCount">0</p>
+        <p class="stat-note">Completed consultations</p>
+      </article>
+    </section>
+
+    <section class="now-calling panel">
+      <div class="calling-icon">♙</div>
+      <div class="calling-content">
+        <p class="section-kicker">NOW CALLING</p>
+        <h2 id="currentName">No patient is being called</h2>
+        <p id="currentDetails">Call the next patient when you are ready.</p>
+      </div>
+      <div class="calling-token">
+        <span>CURRENT TOKEN</span>
+        <strong id="currentToken">---</strong>
+      </div>
+    </section>
+
+    <section class="panel registration-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">PATIENT INTAKE</p>
+          <h2>Register Patient</h2>
+          <p class="panel-description">Enter the patient details to add them to the queue.</p>
+        </div>
+        <span class="heading-icon">＋</span>
+      </div>
+
+      <form id="patientForm">
+        <div class="form-grid">
+          <div class="form-field">
+            <label for="patientName">Full Name <span class="required">*</span></label>
+            <input id="patientName" name="patientName" type="text"
+              placeholder="Enter patient's full name" maxlength="100" required>
+          </div>
+
+          <div class="form-field">
+            <label for="patientAge">Age <span class="required">*</span></label>
+            <input id="patientAge" name="patientAge" type="number"
+              placeholder="Enter age" min="1" max="120" step="1" required>
+          </div>
+
+          <div class="form-field field-wide">
+            <label for="patientSymptoms">Symptoms <span class="required">*</span></label>
+            <input id="patientSymptoms" name="patientSymptoms" type="text"
+              placeholder="Describe the patient's symptoms" maxlength="300" required>
+          </div>
+        </div>
+
+        <label class="emergency-option" for="emergencyCheck">
+          <input id="emergencyCheck" type="checkbox">
+          <span class="emergency-symbol">!</span>
+          <span>
+            <strong>Emergency Case</strong>
+            <small>Prioritize this patient in the queue</small>
+          </span>
+        </label>
+
+        <div class="form-actions">
+          <p class="form-hint">Fields marked <span class="required">*</span> are required.</p>
+          <button class="button button-green" type="submit">＋ ADD PATIENT</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="panel queue-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">LIVE STATUS</p>
+          <h2>Live Waiting Queue</h2>
+          <p class="panel-description">Emergency patients are prioritized before normal patients.</p>
+        </div>
+        <span class="count-pill" id="queuePill">0 waiting</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>TOKEN</th>
+              <th>PATIENT NAME</th>
+              <th>AGE</th>
+              <th>SYMPTOMS</th>
+              <th>PRIORITY</th>
+            </tr>
+          </thead>
+          <tbody id="queueTableBody">
+            <tr>
+              <td colspan="5" class="empty-state">No patients are waiting.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="action-bar">
+        <button class="button button-light" id="clearFormButton" type="button">CLEAR FORM</button>
+        <div class="queue-actions">
+          <button class="button button-blue" id="callNextButton" type="button">▶ CALL NEXT PATIENT</button>
+          <button class="button button-dark" id="markServedButton" type="button" disabled>✓ MARK SERVED</button>
+        </div>
+      </div>
+      <p class="action-hint" id="actionMessage" role="status" aria-live="polite">Register a patient to begin.</p>
+    </section>
+
+    <section class="panel records-panel">
+      <div class="panel-heading">
+        <div>
+          <p class="section-kicker">PATIENT HISTORY</p>
+          <h2>All Patient Records</h2>
+          <p class="panel-description">View the status of every registered patient.</p>
+        </div>
+        <span class="count-pill" id="recordsPill">0 records</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>TOKEN</th>
+              <th>PATIENT NAME</th>
+              <th>AGE</th>
+              <th>SYMPTOMS</th>
+              <th>PRIORITY</th>
+              <th>STATUS</th>
+            </tr>
+          </thead>
+          <tbody id="recordsTableBody">
+            <tr>
+              <td colspan="6" class="empty-state">No patient records yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="footer-brand"><span>QURE</span> Hospital Queue Management System</div>
+      <p>Organizing Queues, Prioritizing Care</p>
+      <p class="demo-notice">Demo website · Patient data is stored in this browser only.</p>
+    </footer>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
